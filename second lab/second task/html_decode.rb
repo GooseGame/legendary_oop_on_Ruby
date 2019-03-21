@@ -1,46 +1,48 @@
-load "stdFunc/init.rb"   
-def htmlDecode(line)#обрабатываем строку за 1 проход цикла
-  outLine = ''
-  counter = 0
-  for i in 0..line.size
-    if counter != 0 #пропуск ненужных итераций
-      counter-=1
-      next
-    end  
-    if line[i...i+6] == '&quot;'
-      outLine+='"'
-      counter = 5
-    elsif line[i...i+6] == '&apos;'
-      outLine+="'"
-      counter = 5 
-    elsif line[i...i+4] == '&lt;'
-      outLine+='<'
-      counter = 3
-    elsif line[i...i+4] == '&gt;'
-      outLine+='>'
-      counter = 3
-    elsif line[i...i+5] == '&amp;'
-      outLine+='&'
-      counter = 4
-    else #если обычный текст
-      if line[i]!=nil
-        outLine+=line[i]
-      end 
-    end 
-  end   
-    return outLine     
-end 
+load "stdFunc/init.rb" 
 
-def output(result)
+class Html
+  def htmlDecode(line)#обрабатываем строку за 1 проход цикла
+    outLine = String.new
+    ignoreIterations = 1
+    for i in 0..line.size
+      if ignoreIterations != 1 #пропуск ненужных итераций
+        ignoreIterations-=1
+        next
+      end  
+      if line[i...i+'&quot;'.length] == '&quot;'
+        outLine+='"'
+        ignoreIterations = '&quot;'.length
+      elsif line[i...i+'&apos;'.length] == '&apos;'
+        outLine+="'"
+        ignoreIterations = '&apos;'.length
+      elsif line[i...i+'&lt;'.length] == '&lt;'
+        outLine+='<'
+        ignoreIterations = '&lt;'.length
+      elsif line[i...i+'&gt;'.length] == '&gt;'
+        outLine+='>'
+        ignoreIterations = '&gt;'.length
+      elsif line[i...i+'&amp;'.length] == '&amp;'
+        outLine+='&'
+        ignoreIterations = '&amp;'.length
+      else #если обычный текст
+        if line[i]!=nil
+          outLine+=line[i]
+        end 
+      end 
+    end   
+      return outLine     
+  end 
+end  
+
+def output(outputString)
   if $isAutoTest == true
-    $stdOut.puts result
+    $stdOut.puts outputString
   else  
-    puts result
+    puts outputString
   end 
 end  
 
 initFiles(ARGV, 1)
 $StdIn.each do |line|
-  output(htmlDecode(line))
-  #puts htmlDecode(line)
+  output(Html.new.htmlDecode(line))
 end
