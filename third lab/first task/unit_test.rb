@@ -2,73 +2,87 @@ load "car.rb"
 require 'test/unit'
 
 class TestCar < Test::Unit::TestCase
-  def test_engine_default
-    assert_equal(true, Car.new.engineOn())   
+  def test_engineOn_default_must_on
+  	testCar = Car.new
+    assert_equal(true, testCar.engineOn())   
   end
-  def test_setGear_default
+  def test_setGear_default_must_set
   	testCar = Car.new
   	testCar.engineOn()
     assert_equal(true, testCar.setGear(1))   
   end
-  def test_setSpeed_default
-  	testCar2 = Car.new
-  	testCar2.engineOn()
-  	testCar2.setGear(1)
-    assert_equal(true, testCar2.setSpeed(20))   
+  def test_setSpeed_default_must_set
+  	testCar = Car.new
+  	testCar.engineOn()
+  	testCar.setGear(1)
+    assert_equal(true, testCar.setSpeed(20))   
   end
-  def test_setSpeed_neutral
-  	testCar3 = Car.new
-  	testCar3.engineOn()
-    assert_equal(false, testCar3.setSpeed(20))   
+  def test_setSpeed_neutral_set_if_less_than_own
+  	testCar = Car.new
+  	testCar.engineOn()
+  	testCar.setGear(-1)
+  	testCar.setSpeed(-6)
+  	testCar.setGear(0)
+    assert_equal(true, testCar.setSpeed(-5))   
   end 
-  def test_setSpeed_neutral
-  	testCar4 = Car.new
-  	testCar4.engineOn()
-    assert_equal(false, testCar4.setSpeed(20))   
+  
+  def test_engineOff_while_moving_engine_must_be_on
+  	testCar = Car.new
+  	testCar.engineOn()
+  	testCar.setGear(1)
+  	testCar.setSpeed(20)
+  	testCar.setGear(0)
+    assert_equal(false, testCar.engineOff())   
   end 
-  def test_engineOff_while_moving
-  	testCar5 = Car.new
-  	testCar5.engineOn()
-  	testCar5.setGear(1)
-  	testCar5.setSpeed(20)
-  	testCar5.setGear(0)
-    assert_equal(false, testCar5.engineOff())   
-  end 
-  def test_setSpeed_while_neutral
-  	testCar6 = Car.new
-  	testCar6.engineOn()
-  	testCar6.setGear(1)
-  	testCar6.setSpeed(20)
-  	testCar6.setGear(0)
-    assert_equal(false, testCar6.setSpeed(25))   
+  def test_setSpeed_in_neutral_false_if_speed_more_than_own
+  	testCar = Car.new
+  	testCar.engineOn()
+  	testCar.setGear(1)
+  	testCar.setSpeed(20)
+  	testCar.setGear(0)
+    assert_equal(false, testCar.setSpeed(25))   
   end
-  def test_setGear_backward
-  	testCar7 = Car.new
-  	testCar7.engineOn()
-  	testCar7.setGear(1)
-  	testCar7.setSpeed(20)
-  	testCar7.setGear(0)
-    assert_equal(false, testCar7.setGear(-1))   
+  def test_setGear_cant_set_backward_gear_while_speed_more_than_zero
+  	testCar = Car.new
+  	testCar.engineOn()
+  	testCar.setGear(1)
+  	testCar.setSpeed(20)
+  	testCar.setGear(0)
+    assert_equal(false, testCar.setGear(-1))   
   end
-  def test_setGear_first
-  	testCar8 = Car.new
-  	testCar8.engineOn()
-  	testCar8.setGear(-1)
-  	testCar8.setSpeed(-10)
-  	testCar8.setGear(0)
-    assert_equal(false, testCar8.setGear(1))   
+
+  def test_setGear_cant_set_backward_gear_while_speed_less_than_zero
+  	testCar = Car.new
+  	testCar.engineOn()
+  	testCar.setGear(-1)
+  	testCar.setSpeed(-10)
+  	testCar.setGear(0)
+    assert_equal(false, testCar.setGear(-1))   
   end
-  def test_setGear_first_while_go_backward
-  	testCar9 = Car.new
-  	testCar9.engineOn()
-  	testCar9.setGear(-1)
-  	testCar9.setSpeed(-10)
-  	testCar9.setGear(0)
-    assert_equal(false, testCar9.setGear(1))   
+  	
+  def test_setSpeed_must_not_generate_mistakes_when_neutral_choose_own_speed
+		testCar = Car.new
+  	testCar.engineOn()
+  	testCar.setGear(-1)
+  	testCar.setSpeed(-10)
+  	testCar.setGear(0)
+    assert_equal(true, testCar.setSpeed(-10))
+  end  
+  def test_setGear_cant_change_gear_to_first_if_go_bacward_in_neutral
+  	testCar = Car.new
+  	testCar.engineOn()
+  	testCar.setGear(-1)
+  	testCar.setSpeed(-10)
+  	testCar.setGear(0)
+    assert_equal(false, testCar.setGear(1))   
   end
-  def test_engineOff_non_neutral
-  	testCar10 = Car.new
-  	testCar10.setGear(1)
-    assert_equal(false, testCar10.engineOff())   
+  def test_engineOff_cant_off_the_engine_while_non_neutral
+  	testCar = Car.new
+  	testCar.setGear(1)
+    assert_equal(false, testCar.engineOff())   
   end
+  def test_setGear_cant_choose_non_neutral_gear_while_engine_is_off
+  	testCar = Car.new
+    assert_equal(false, testCar.setGear(4))   
+  end	
 end     

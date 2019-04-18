@@ -6,18 +6,26 @@ class Car
 							3 => (30..60), 
 							4 => (40..90), 
 							5 => (50..150)}			
+
 	def initialize()
 		@maxSpeed, @maxGear = 150, 5
 		@speed = 0
 		@engineIsOn = false
 		@currentGear = 0
-		@moveDirection = 0 #-1 назад, 0 стоим, 1 вперед		
 	end	
-	def moveDirectionCheck()
-		@moveDirection = -1 if @speed < 0
-		@moveDirection = 1 if @speed > 0
-		@moveDirection = 0 if @speed == 0
+
+	def speed
+		@speed
+	end
+		
+	def engineIsOn
+		@engineIsOn
+	end
+	
+	def currentGear
+		@currentGear
 	end	
+
 	def engineOn()
 		if !@engineIsOn
 			@engineIsOn = true
@@ -28,24 +36,28 @@ class Car
 	end
 
 	def engineOff()
-		if @engineIsOn and @moveDirection == 0 and @currentGear == 0
+		if @engineIsOn and @currentGear == 0 and @speed == 0
 			@engineIsOn = false
 			return true
 		else 
+			puts 'cant off the engine'
 			return false
 		end	
 	end	
 
-	def setSpeed(speedValue)
+	def setSpeed(speedValue)	
 		if @engineIsOn
 			if @@gear[@currentGear].to_a.include?(speedValue)
 				if @currentGear != 0 
 					@speed = speedValue
-					moveDirectionCheck()
 					return true
-				elsif speedValue < @speed
+				elsif @speed == speedValue
+					return true
+				elsif @speed > 0 and speedValue < @speed
 					@speed = speedValue
-					moveDirectionCheck()
+					return true
+				elsif @speed < 0 and speedValue > @speed	
+					@speed = speedValue
 					return true
 				else
 					puts 'you cant move faster in neutral'	
@@ -62,44 +74,44 @@ class Car
 	end
 
 	def setGear(gearValue)
-		if @engineIsOn
-			if @@gear[gearValue].to_a.include?(@speed)
-				if @speed == 0 and @currentGear == 0 and gearValue == -1
+		if (-1..5).include?(gearValue)
+			if @engineIsOn
+				if @@gear[gearValue].to_a.include?(@speed)
+					if @speed == 0 and @currentGear == 0 and gearValue == -1
+						@currentGear = gearValue
+						return true
+					elsif	@speed == 0 and @currentGear == -1 and gearValue == 1
+						@currentGear = gearValue
+						return true
+					elsif @speed == 0 and @currentGear == 0 and gearValue == 1
+						@currentGear = gearValue
+						return true
+					elsif gearValue != -1
+						if gearValue != 1	
+							@currentGear = gearValue
+						end	
+						return true
+					else 
+						puts 'you cant do that'
+						return false	
+					end			
+				else	
+					puts 'speed is not in your gear range'
+					return false
+				end	
+				if @speed == 0
 					@currentGear = gearValue
 					return true
-				elsif	@speed == 0 and @currentGear == -1 and gearValue == 1
-					@currentGear = gearValue
-					return true
-				elsif @speed == 0 and @currentGear == 0 and gearValue == 1
-					@currentGear = gearValue
-					return true
-				elsif gearValue != -1 or gearValue != 1	
-					@currentGear = gearValue
-					return true
-				else 
-					puts 'you cant do that'
-					return false	
-				end			
-			else	
-				puts 'speed is not in your gear range'
+				end	
+			elsif gearValue == 0
+				@currentGear = gearValue
+				return true
+			else		
+				puts 'you cant set non neutral gear when engine is off'	
 				return false
 			end	
-		elsif @speed == 0
-			@currentGear = gearValue
-			return true
-		else	
-			puts 'you cant set non neutral gear when engine is off'	
+		else puts 'your car has only -1..5 gears'
 			return false
 		end	
-	end	
-
-	def showInfo()
-		puts 'engine is on: ', @engineIsOn
-		puts 'car current speed: ', @speed
-		puts 'car current gear: ', @currentGear
-		puts 'car current direction: ', @moveDirection
-	end	
+	end		
 end	
-
-
-	
