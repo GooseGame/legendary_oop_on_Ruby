@@ -4,8 +4,7 @@ $ExampleLineDataRequest = [0.0,0.0, 3.3,3.3, '00FF00']
 $ExampleTriangleDataRequest = [0.0,0.0, 3.3,3.3, 6.6,0.0, '00FF00', '00FF00']
 $ExampleRectangleDataRequest = [0.0,0.0, 5, 5, '00FF00', '00FF00']
 $ExampleCircleDataRequest = [0.0,0.0, 3.3, '5DFA90', 'FFFFFF']
-
-
+ 
 def checkRGB(rgb)
     isRightRGB = true
     for i in 0...rgb.length
